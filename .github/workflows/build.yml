@@ -27,13 +27,8 @@ jobs:
       run: npm install -g pnpm
 
     - name: Install dependencies
-      run: |
-        if [ ! -d "mobile" ]; then
-          echo "Directory 'mobile' does not exist. Exiting."
-          exit 1
-        fi
-        cd mobile
-        pnpm install
+      working-directory: mobile
+      run: pnpm install
 
     - name: Install expo-dev-client
       working-directory: mobile
