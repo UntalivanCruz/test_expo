@@ -46,9 +46,9 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       run: |
-        eas build --platform android --profile development --non-interactive
-        # Download the built APK artifact from Expo
-        EAS_BUILD_ID=$(eas build:list --platform android --status finished --limit 1 --json | jq -r '.[0].id')
+        BUILD_INFO=$(eas build --platform android --profile development --non-interactive --wait --json)
+        echo "$BUILD_INFO"
+        EAS_BUILD_ID=$(echo "$BUILD_INFO" | jq -r '.id')
         eas build:download --platform android --id $EAS_BUILD_ID --output app-release.apk
 
     - name: Rename APK with version tag
@@ -58,6 +58,12 @@ jobs:
         mkdir -p build
         mv app-release.apk build/UTCDForms-${VERSION}.apk
         echo "APK_FINAL_PATH=mobile/build/UTCDForms-${VERSION}.apk" >> $GITHUB_OUTPUT
+        
+    - name: Generar información de release
+      id: release_info
+      run: |
+        BUILD_URL="https://expo.dev/accounts/devutcd/projects/utcdforms/builds/${EAS_BUILD_ID}"
+        echo "RELEASE_BODY=🤖 Open this link on your Android devices (or scan the QR code) to install the app:%0A${BUILD_URL}" >> $GITHUB_OUTPUT
 
     - name: Upload APK to GitHub Release
       uses: softprops/action-gh-release@v1
