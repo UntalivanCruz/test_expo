@@ -48,8 +48,10 @@ jobs:
       run: |
         BUILD_INFO=$(eas build --platform android --profile development --non-interactive --wait --json)
         echo "$BUILD_INFO"
+        APK_URL=$(echo "$BUILD_INFO" | jq -r '.[0].artifacts.buildUrl')
+        curl -L "$APK_URL" -o app-release.apk
         EAS_BUILD_ID=$(echo "$BUILD_INFO" | jq -r '.[0].id')
-        eas build:download --platform android --id $EAS_BUILD_ID --output app-release.apk
+        echo "EAS_BUILD_ID=$EAS_BUILD_ID" >> $GITHUB_ENV
 
     - name: Rename APK with version tag
       id: rename_apk
