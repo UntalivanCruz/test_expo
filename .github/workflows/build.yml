@@ -48,7 +48,7 @@ jobs:
       run: |
         BUILD_INFO=$(eas build --platform android --profile development --non-interactive --wait --json)
         echo "$BUILD_INFO"
-        EAS_BUILD_ID=$(echo "$BUILD_INFO" | jq -r '.id')
+        EAS_BUILD_ID=$(echo "$BUILD_INFO" | jq -r '.[0].id')
         eas build:download --platform android --id $EAS_BUILD_ID --output app-release.apk
 
     - name: Rename APK with version tag
@@ -58,7 +58,7 @@ jobs:
         mkdir -p build
         mv app-release.apk build/UTCDForms-${VERSION}.apk
         echo "APK_FINAL_PATH=mobile/build/UTCDForms-${VERSION}.apk" >> $GITHUB_OUTPUT
-        
+
     - name: Generar información de release
       id: release_info
       run: |
