@@ -27,11 +27,9 @@ jobs:
       run: npm install -g pnpm
 
     - name: Install dependencies
-      working-directory: mobile
       run: pnpm install
 
     - name: Install expo-dev-client
-      working-directory: mobile
       run: npx expo install expo-dev-client
 
     - name: Install jq
@@ -45,7 +43,6 @@ jobs:
         yes | sudo sdkmanager --licenses || true
 
     - name: Build APK with EAS (Expo Cloud)
-      working-directory: mobile
       run: |
         eas build --platform android --profile development --non-interactive
         # Download the built APK artifact from Expo
@@ -53,7 +50,6 @@ jobs:
         eas build:download --platform android --id $EAS_BUILD_ID --output app-release.apk
 
     - name: Rename APK with version tag
-      working-directory: mobile
       id: rename_apk
       run: |
         VERSION=${{ github.ref_name }}
