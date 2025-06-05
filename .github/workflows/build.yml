@@ -43,6 +43,8 @@ jobs:
         yes | sudo sdkmanager --licenses || true
 
     - name: Build APK with EAS (Expo Cloud)
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       run: |
         eas build --platform android --profile development --non-interactive
         # Download the built APK artifact from Expo
